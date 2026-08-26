@@ -1,0 +1,781 @@
+<!-- 
+  The Ledger — Monthly Expense Tracker
+  Copyright (c) 2026 Swapnendu Pan. All Rights Reserved.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Ledger — Monthly Budget & Expense Register</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#efece2;
+    --paper-dark:#e3dfd0;
+    --ink:#211f1a;
+    --ink-soft:#5c584d;
+    --rust:#b23a2e;
+    --rust-dark:#8f2d23;
+    --forest:#33513a;
+    --gold:#b98a2e;
+    --line:#c9c3b0;
+    --white:#faf9f4;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: radial-gradient(ellipse at top, #d9d4c2, #c7c2ae 70%);
+    color:var(--ink);
+    font-family:'IBM Plex Mono', monospace;
+    min-height:100vh;
+    padding:32px 16px 64px;
+    display:flex;
+    justify-content:center;
+  }
+  .register{
+    width:100%;
+    max-width:620px;
+  }
+
+  /* ---------- Header ---------- */
+  .shop-sign{
+    text-align:center;
+    margin-bottom:22px;
+  }
+  .shop-sign .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    letter-spacing:.28em;
+    font-size:11px;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+  }
+  .shop-sign h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:42px;
+    margin:6px 0 4px;
+    letter-spacing:-0.01em;
+  }
+  .shop-sign .sub{
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+
+  /* ---------- Budget Cards Top Dashboard ---------- */
+  .budget-tracker{
+    background:var(--white);
+    border:1px solid var(--line);
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 10px 25px -10px rgba(20,18,10,.2);
+  }
+  .budget-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
+    border-bottom:1px dashed var(--line);
+    padding-bottom:10px;
+  }
+  .budget-header h2{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:16px;
+    margin:0;
+  }
+  .month-select{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    padding:4px 8px;
+    border:1px solid var(--line);
+    background:var(--paper);
+  }
+  .budget-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:10px;
+  }
+  .budget-box{
+    background:var(--paper);
+    padding:12px;
+    border:1px solid var(--line);
+  }
+  .budget-box.highlight{
+    background:var(--forest);
+    color:var(--white);
+  }
+  .budget-box .label{
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    color:var(--ink-soft);
+    margin-bottom:4px;
+  }
+  .budget-box.highlight .label{
+    color:rgba(255,255,255,0.8);
+  }
+  .budget-box .val{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:20px;
+  }
+  .budget-input{
+    width:100%;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:18px;
+    padding:4px 6px;
+    border:1px solid var(--line);
+    background:var(--white);
+    color:var(--ink);
+  }
+
+  /* ---------- Action Toolbar ---------- */
+  .toolbar{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+  }
+  .action-btn{
+    flex:1;
+    padding:10px;
+    background:var(--forest);
+    color:var(--white);
+    border:none;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:13px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    transition:background .15s ease;
+  }
+  .action-btn:hover{ opacity:.9; }
+  .action-btn.secondary{
+    background:transparent;
+    color:var(--ink-soft);
+    border:1px solid var(--line);
+  }
+  .action-btn.secondary:hover{
+    background:var(--paper-dark);
+    color:var(--ink);
+  }
+
+  /* ---------- Add expense card ---------- */
+  .ring-up{
+    background:var(--paper);
+    border:1px solid var(--line);
+    padding:20px;
+    margin-bottom:26px;
+  }
+  .ring-up h2{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:15px;
+    margin:0 0 14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .ring-up h2::before{
+    content:"";
+    width:8px;height:8px;
+    background:var(--rust);
+    display:inline-block;
+    border-radius:1px;
+  }
+  .field-row{
+    display:flex;
+    gap:10px;
+    margin-bottom:10px;
+    flex-wrap:wrap;
+  }
+  .field{
+    flex:1 1 140px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .field label{
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    color:var(--ink-soft);
+  }
+  .field input, .field select{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13.5px;
+    padding:9px 10px;
+    border:1px solid var(--line);
+    background:var(--white);
+    color:var(--ink);
+  }
+  .field input:focus, .field select:focus{
+    outline:2px solid var(--forest);
+    outline-offset:-1px;
+  }
+  .guess-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin:2px 0 14px;
+    min-height:22px;
+    font-size:11.5px;
+    color:var(--ink-soft);
+  }
+  .guess-badge{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:11px;
+    padding:3px 9px;
+    border-radius:999px;
+    background:var(--forest);
+    color:var(--white);
+    letter-spacing:.02em;
+  }
+  .ring-btn{
+    width:100%;
+    padding:12px;
+    background:var(--rust);
+    color:var(--white);
+    border:none;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:14px;
+    letter-spacing:.03em;
+    cursor:pointer;
+    transition:background .15s ease, transform .1s ease;
+  }
+  .ring-btn:hover{ background:var(--rust-dark); }
+  .ring-btn:active{ transform:scale(.995); }
+
+  /* ---------- Month Cards & Accordions ---------- */
+  .ledger-list h2{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:15px;
+    margin:0 0 12px;
+  }
+  .month-card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    margin-bottom:16px;
+    overflow:hidden;
+  }
+  .month-header{
+    background:var(--paper-dark);
+    padding:12px 16px;
+    display:flex;
+    justify-space-between;
+    align-items:center;
+  }
+  .month-title{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:16px;
+  }
+  .month-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .month-pdf-btn{
+    background:var(--forest);
+    color:var(--white);
+    border:none;
+    font-family:'Space Grotesk', sans-serif;
+    font-size:11px;
+    padding:4px 8px;
+    cursor:pointer;
+    border-radius:2px;
+  }
+  .month-sum{
+    font-weight:700;
+    color:var(--rust);
+  }
+  .month-body{
+    padding:10px 16px;
+  }
+
+  .line-item{
+    display:grid;
+    grid-template-columns:1fr auto auto;
+    gap:10px;
+    align-items:center;
+    padding:10px 0;
+    border-bottom:1px dashed var(--line);
+    font-size:12.5px;
+  }
+  .line-item:last-child{
+    border-bottom:none;
+  }
+  .line-item .desc{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    min-width:0;
+  }
+  .line-item .desc .name{
+    font-weight:600;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .line-item .desc .meta{
+    font-size:10.5px;
+    color:var(--ink-soft);
+  }
+  .cat-select{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    background:var(--white);
+    border:1px solid var(--line);
+    padding:4px 6px;
+    color:var(--ink-soft);
+    max-width:118px;
+  }
+  .line-item .amt{
+    font-weight:700;
+    white-space:nowrap;
+  }
+  .void-btn{
+    background:none;
+    border:none;
+    color:var(--rust);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    cursor:pointer;
+    text-decoration:underline;
+    padding:0;
+    justify-self:end;
+  }
+  
+  .empty-state{
+    text-align:center;
+    padding:36px 10px;
+    color:var(--ink-soft);
+    font-size:12.5px;
+    letter-spacing:.05em;
+  }
+  .load-note{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:10px;
+    min-height:14px;
+  }
+
+  /* Printable Rules for PDF export */
+  @media print {
+    body { background: #fff; color: #000; padding: 0; }
+    .register { max-width: 100%; }
+    .ring-up, .toolbar, .load-note, .void-btn, .cat-select, .month-pdf-btn { display: none !important; }
+    .month-card { border: none; background: none; }
+    .month-card.print-hide { display: none !important; }
+    .month-header { background: none; border-bottom: 2px solid #000; padding: 6px 0; }
+    .month-body { padding: 0; }
+    .line-item { grid-template-columns: 1fr auto; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="register">
+
+  <div class="shop-sign">
+    <div class="eyebrow">Est. today &nbsp;·&nbsp; No. 001</div>
+    <h1>The Ledger</h1>
+    <div class="sub">monthly budget & automatic expense tracker</div>
+  </div>
+
+  <!-- Budget Dashboard Header -->
+  <div class="budget-tracker">
+    <div class="budget-header">
+      <h2>Monthly Ledger Status</h2>
+      <select id="budgetMonthSelect" class="month-select"></select>
+    </div>
+    <div class="budget-grid">
+      <div class="budget-box">
+        <div class="label">Starting Budget (₹)</div>
+        <input type="number" id="budgetInput" class="budget-input" value="39000" min="0" step="100">
+      </div>
+      <div class="budget-box">
+        <div class="label">Spent This Month</div>
+        <div class="val" id="spentVal" style="color:var(--rust);">₹0</div>
+      </div>
+      <div class="budget-box">
+        <div class="label">Remaining Balance</div>
+        <div class="val" id="remainingVal">₹39,000</div>
+      </div>
+      <div class="budget-box highlight">
+        <div class="label">Total Savings</div>
+        <div class="val" id="savingsVal">₹39,000</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="action-btn secondary" id="clearBtn">🗑 Clear All Data</button>
+  </div>
+
+  <div class="ring-up">
+    <h2>Ring up an expense</h2>
+    <div class="field-row">
+      <div class="field" style="flex:2 1 200px;">
+        <label for="descInput">Description</label>
+        <input id="descInput" type="text" placeholder="e.g. Chicken 150 / Cucumber 15" autocomplete="off">
+      </div>
+      <div class="field" style="flex:1 1 100px;">
+        <label for="amtInput">Amount (₹)</label>
+        <input id="amtInput" type="number" min="0" step="0.01" placeholder="0.00">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="dateInput">Date</label>
+        <input id="dateInput" type="date">
+      </div>
+      <div class="field">
+        <label for="catInput">Category</label>
+        <select id="catInput"></select>
+      </div>
+    </div>
+    <div class="guess-row" id="guessRow"></div>
+    <button class="ring-btn" id="addBtn">Ring It Up</button>
+  </div>
+
+  <div class="ledger-list">
+    <h2>Monthly Lists</h2>
+    <div id="monthlyListWrap"></div>
+  </div>
+
+  <div class="load-note" id="loadNote"></div>
+</div>
+
+<script>
+(function(){
+  const DEFAULT_BUDGET = 39000;
+  const CATEGORIES = ["Food & Dining","Transport","Shopping","Bills & Utilities","Entertainment","Health","Housing","Other"];
+
+  const KEYWORDS = {
+    "Food & Dining": ["chicken","cucumber","cold drink","cafe","coffee","restaurant","food","grocery","groceries","pizza","lunch","dinner","breakfast","swiggy","zomato","starbucks","mcdonald","kitchen","snack","bakery","tea","dine","brunch","canteen","dominos","kfc"],
+    "Transport": ["uber","ola","taxi","cab","fuel","petrol","diesel","metro","bus","train","flight","parking","toll","rapido","auto","ride","airport","gas station"],
+    "Shopping": ["amazon","flipkart","mall","clothes","clothing","shoes","store","shopping","myntra","ajio","apparel","electronics","gadget"],
+    "Bills & Utilities": ["electricity","water bill","internet","wifi","phone bill","recharge","emi","insurance","subscription","netflix","spotify","broadband","gas bill","utility","postpaid","prepaid"],
+    "Health": ["pharmacy","doctor","hospital","medicine","gym","clinic","dentist","medical","health","fitness","yoga"],
+    "Entertainment": ["movie","cinema","concert","game","bookmyshow","theatre","theater","music","event","outing","party","club"],
+    "Housing": ["rent","maintenance","furniture","landlord","apartment","housing","repair","decor"]
+  };
+
+  const CAT_COLOR = {
+    "Food & Dining": "#b23a2e",
+    "Transport": "#b98a2e",
+    "Shopping": "#33513a",
+    "Bills & Utilities": "#4a5b7a",
+    "Entertainment": "#8a4b8f",
+    "Health": "#2e8f7a",
+    "Housing": "#7a5230",
+    "Other": "#6b6659"
+  };
+
+  let expenses = [];
+  let monthlyBudgets = {}; // Holds user budgets: { "2026-08": 39000, "2026-09": 45000 }
+  let selectedMonthKey = new Date().toISOString().slice(0,7); // YYYY-MM
+  const STORAGE_KEY = "monthly-expenses-data-v3";
+
+  const $ = (id) => document.getElementById(id);
+  const fmt = (n) => "₹" + Number(n).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+  function guessCategory(desc){
+    const d = desc.toLowerCase();
+    for(const cat of Object.keys(KEYWORDS)){
+      for(const kw of KEYWORDS[cat]){
+        if(d.includes(kw)) return cat;
+      }
+    }
+    return "Other";
+  }
+
+  function populateCategorySelect(){
+    const sel = $("catInput");
+    sel.innerHTML = "";
+    const autoOpt = document.createElement("option");
+    autoOpt.value = "__auto__";
+    autoOpt.textContent = "Auto-detect";
+    sel.appendChild(autoOpt);
+    CATEGORIES.forEach(c=>{
+      const o = document.createElement("option");
+      o.value = c; o.textContent = c;
+      sel.appendChild(o);
+    });
+  }
+
+  function updateGuessRow(){
+    const desc = $("descInput").value.trim();
+    const catSel = $("catInput").value;
+    const row = $("guessRow");
+    if(catSel !== "__auto__"){
+      row.innerHTML = "";
+      return;
+    }
+    if(!desc){
+      row.innerHTML = '<span>Type a description — category is guessed automatically.</span>';
+      return;
+    }
+    const guess = guessCategory(desc);
+    row.innerHTML = `<span>Detected as</span><span class="guess-badge" style="background:${CAT_COLOR[guess]}">${guess}</span>`;
+  }
+
+  async function loadData(){
+    $("loadNote").textContent = "Loading your ledger…";
+    try{
+      let storedData = null;
+      if (window.storage && window.storage.get) {
+        const res = await window.storage.get(STORAGE_KEY, false);
+        storedData = res && res.value;
+      } else {
+        storedData = localStorage.getItem(STORAGE_KEY);
+      }
+      if (storedData) {
+        const parsed = JSON.parse(storedData);
+        expenses = parsed.expenses || [];
+        monthlyBudgets = parsed.monthlyBudgets || {};
+      } else {
+        expenses = [];
+        monthlyBudgets = {};
+      }
+    }catch(e){
+      expenses = [];
+      monthlyBudgets = {};
+    }
+    $("loadNote").textContent = "";
+    render();
+  }
+
+  async function saveData(){
+    try{
+      const payload = {
+        expenses: expenses,
+        monthlyBudgets: monthlyBudgets
+      };
+      const dataStr = JSON.stringify(payload);
+      let success = true;
+      if (window.storage && window.storage.set) {
+        success = await window.storage.set(STORAGE_KEY, dataStr, false);
+      } else {
+        localStorage.setItem(STORAGE_KEY, dataStr);
+      }
+      $("loadNote").textContent = success ? "Saved automatically" : "Saved locally";
+      setTimeout(() => { $("loadNote").textContent = ""; }, 1500);
+    }catch(e){
+      $("loadNote").textContent = "Couldn't save — your entry may not persist.";
+    }
+  }
+
+  function addExpense(){
+    const desc = $("descInput").value.trim();
+    const amt = parseFloat($("amtInput").value);
+    const date = $("dateInput").value || new Date().toISOString().slice(0,10);
+    const catSel = $("catInput").value;
+
+    if(!desc){ $("descInput").focus(); return; }
+    if(!amt || amt <= 0){ $("amtInput").focus(); return; }
+
+    const category = catSel === "__auto__" ? guessCategory(desc) : catSel;
+
+    expenses.unshift({
+      id: Date.now() + "-" + Math.random().toString(36).slice(2,7),
+      description: desc,
+      amount: amt,
+      category: category,
+      date: date
+    });
+
+    selectedMonthKey = date.slice(0,7);
+    $("descInput").value = "";
+    $("amtInput").value = "";
+    $("catInput").value = "__auto__";
+    updateGuessRow();
+    saveData();
+    render();
+  }
+
+  function voidExpense(id){
+    expenses = expenses.filter(e=>e.id !== id);
+    saveData();
+    render();
+  }
+
+  function clearAllExpenses(){
+    if (confirm("Are you sure you want to clear all monthly expenses and reset savings?")) {
+      expenses = [];
+      monthlyBudgets = {};
+      saveData();
+      render();
+    }
+  }
+
+  function printMonthPDF(monthKey){
+    const cards = document.querySelectorAll(".month-card");
+    cards.forEach(card => {
+      if(card.dataset.month === monthKey){
+        card.classList.remove("print-hide");
+      } else {
+        card.classList.add("print-hide");
+      }
+    });
+    window.print();
+    cards.forEach(card => card.classList.remove("print-hide"));
+  }
+
+  function reassignCategory(id, newCat){
+    const e = expenses.find(e=>e.id===id);
+    if(e) e.category = newCat;
+    saveData();
+    render();
+  }
+
+  function getMonthYearLabel(key){
+    const [year, month] = key.split("-");
+    const d = new Date(year, month - 1);
+    return d.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+  }
+
+  function updateBudgetSelectorOptions(keys){
+    const sel = $("budgetMonthSelect");
+    const currentSel = selectedMonthKey;
+    sel.innerHTML = "";
+    
+    const allKeys = Array.from(new Set([new Date().toISOString().slice(0,7), ...keys])).sort().reverse();
+    
+    allKeys.forEach(k => {
+      const o = document.createElement("option");
+      o.value = k;
+      o.textContent = getMonthYearLabel(k);
+      if(k === currentSel) o.selected = true;
+      sel.appendChild(o);
+    });
+  }
+
+  function render(){
+    renderDashboard();
+    renderMonthlyLists();
+  }
+
+  function getCurrentMonthBudget(){
+    return monthlyBudgets[selectedMonthKey] !== undefined ? monthlyBudgets[selectedMonthKey] : DEFAULT_BUDGET;
+  }
+
+  function renderDashboard(){
+    const currentBudget = getCurrentMonthBudget();
+    $("budgetInput").value = currentBudget;
+
+    const monthExpenses = expenses.filter(e => e.date.slice(0,7) === selectedMonthKey);
+    const totalSpent = monthExpenses.reduce((sum, e) => sum + e.amount, 0);
+    const remaining = currentBudget - totalSpent;
+
+    $("spentVal").textContent = fmt(totalSpent);
+    $("remainingVal").textContent = fmt(remaining);
+    $("savingsVal").textContent = fmt(remaining);
+  }
+
+  function renderMonthlyLists(){
+    const wrap = $("monthlyListWrap");
+    
+    const groups = {};
+    expenses.forEach(e => {
+      const key = e.date.slice(0, 7);
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(e);
+    });
+
+    const sortedKeys = Object.keys(groups).sort().reverse();
+    updateBudgetSelectorOptions(sortedKeys);
+
+    if(!expenses.length){
+      wrap.innerHTML = `<div class="empty-state"><span style="font-weight:700; display:block; font-size:16px;">NO EXPENSES RECORDED</span>Your entries will be grouped automatically by month here.</div>`;
+      return;
+    }
+
+    wrap.innerHTML = sortedKeys.map(key => {
+      const groupExpenses = groups[key];
+      const monthTotal = groupExpenses.reduce((sum, e) => sum + e.amount, 0);
+      const label = getMonthYearLabel(key);
+
+      return `
+        <div class="month-card" data-month="${key}">
+          <div class="month-header">
+            <span class="month-title">📅 ${label}</span>
+            <div class="month-actions">
+              <span class="month-sum">${fmt(monthTotal)}</span>
+              <button class="month-pdf-btn" data-month="${key}">📄 PDF</button>
+            </div>
+          </div>
+          <div class="month-body">
+            ${groupExpenses.map(e => `
+              <div class="line-item">
+                <div class="desc">
+                  <span class="name">${escapeHtml(e.description)}</span>
+                  <span class="meta">${e.date}</span>
+                </div>
+                <select class="cat-select" data-id="${e.id}">
+                  ${CATEGORIES.map(c => `<option value="${c}" ${c===e.category?'selected':''}>${c}</option>`).join("")}
+                </select>
+                <span class="amt">${fmt(e.amount)}</span>
+                <button class="void-btn" data-id="${e.id}" style="grid-column:1 / -1; text-align:right;">void ✕</button>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    wrap.querySelectorAll(".month-pdf-btn").forEach(btn => {
+      btn.addEventListener("click", () => printMonthPDF(btn.dataset.month));
+    });
+    wrap.querySelectorAll(".cat-select").forEach(sel => {
+      sel.addEventListener("change", () => reassignCategory(sel.dataset.id, sel.value));
+    });
+    wrap.querySelectorAll(".void-btn").forEach(btn => {
+      btn.addEventListener("click", () => voidExpense(btn.dataset.id));
+    });
+  }
+
+  function escapeHtml(str){
+    const d = document.createElement("div");
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  // Init
+  populateCategorySelect();
+  $("dateInput").value = new Date().toISOString().slice(0,10);
+  $("descInput").addEventListener("input", updateGuessRow);
+  $("catInput").addEventListener("change", updateGuessRow);
+  $("addBtn").addEventListener("click", addExpense);
+  $("clearBtn").addEventListener("click", clearAllExpenses);
+  
+  $("budgetMonthSelect").addEventListener("change", (e) => {
+    selectedMonthKey = e.target.value;
+    renderDashboard();
+  });
+
+  $("budgetInput").addEventListener("input", (e) => {
+    const val = parseFloat(e.target.value);
+    monthlyBudgets[selectedMonthKey] = isNaN(val) ? 0 : val;
+    saveData();
+    renderDashboard();
+  });
+
+  $("amtInput").addEventListener("keypress", (e)=>{ if(e.key==="Enter") addExpense(); });
+  $("descInput").addEventListener("keypress", (e)=>{ if(e.key==="Enter") $("amtInput").focus(); });
+  updateGuessRow();
+  loadData();
+})();
+</script>
+</body>
+</html>
