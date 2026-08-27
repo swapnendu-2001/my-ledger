@@ -776,6 +776,23 @@
   updateGuessRow();
   loadData();
 })();
+  ... 
+  <!-- Your main ledger content/cards end here -->
+  </div> 
+
+  <!-- 🟢 PASTE HERE: Right before </body> -->
+  <div style="clear: both; width: 100%; display: block; margin-top: 50px;">
+    <footer style="text-align: center; padding: 20px 10px; font-family: inherit; font-size: 13px; color: #5c584d; border-top: 1px dashed #c9c3b0;">
+      <p style="margin: 0;">Copyright &copy; <span id="year"></span> <strong>Swapnendu Pan</strong>. All Rights Reserved.</p>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+
+</body>
+</html>
 </script>
  </body>
 </html>
